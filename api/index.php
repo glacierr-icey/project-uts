@@ -1,8 +1,7 @@
-<?php
+no<?php
 
 // Vercel serverless entry point for Laravel
 
-// Pastikan direktori sementara tersedia untuk cache dan views
 $directories = [
     '/tmp/views',
     '/tmp/bootstrap/cache',
@@ -17,19 +16,16 @@ foreach ($directories as $dir) {
     }
 }
 
-// Redirect cache dan view path ke /tmp
 $_ENV['APP_SERVICES_CACHE'] = $_ENV['APP_SERVICES_CACHE'] ?? '/tmp/services.php';
 $_ENV['APP_PACKAGES_CACHE'] = $_ENV['APP_PACKAGES_CACHE'] ?? '/tmp/packages.php';
 $_ENV['APP_CONFIG_CACHE'] = $_ENV['APP_CONFIG_CACHE'] ?? '/tmp/config.php';
 $_ENV['APP_ROUTES_CACHE'] = $_ENV['APP_ROUTES_CACHE'] ?? '/tmp/routes.php';
 $_ENV['VIEW_COMPILED_PATH'] = $_ENV['VIEW_COMPILED_PATH'] ?? '/tmp/views';
 
-// Inisialisasi SQLite database di /tmp jika digunakan
 $dbConnection = $_ENV['DB_CONNECTION'] ?? $_SERVER['DB_CONNECTION'] ?? null;
 $dbDatabase = $_ENV['DB_DATABASE'] ?? $_SERVER['DB_DATABASE'] ?? null;
 if ($dbConnection === 'sqlite' && is_string($dbDatabase) && str_starts_with($dbDatabase, '/tmp') && !file_exists($dbDatabase)) {
     touch($dbDatabase);
 }
 
-// Teruskan request ke public/index.php
 require __DIR__ . '/../public/index.php';
