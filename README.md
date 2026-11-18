@@ -76,8 +76,13 @@ Buka `http://127.0.0.1:8000`.
 Aplikasi sudah disiapkan untuk runtime `vercel-php@0.7.4` (PHP 8.3):
 
 - `api/index.php` adalah entry point. Entry point ini membuat direktori writable di `/tmp`,
-  mengalihkan cache/compiled view/session ke `/tmp`, lalu menjalankan `migrate` + `seed`
-  otomatis pada request pertama ketika file SQLite masih kosong.
+  mengalihkan cache/compiled view/session ke `/tmp`, lalu menyalin
+  `database/vercel-seed.sqlite` ( database hasil `migrate --seed`) ke
+  `/tmp/database.sqlite` saat cold start. **Tidak ada migrasi yang dijalankan di dalam
+  request**, sehingga menghindari 500/timeout. Jika file seed tidak ikut ter-deploy,
+  entry point fallback ke `migrate` + `db:seed`.
+- Jika masih gagal, buka `/?__vercel_diag=1` untuk mengecek autoload, seed DB, dan izin
+  `/tmp`. Pesan fatal juga ditampilkan di halaman dan di Vercel Function Logs.
 - `vercel.json` meneruskan aset statik (`/build`, `/assets`, `/images`, `/favicon.ico`,
   `/robots.txt`) langsung dari folder `public`, sisanya ke `api/index.php`.
 - File `.env` **tidak** ikut ter-deploy. Set variabel di Vercel Dashboard
