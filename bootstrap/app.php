@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,8 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Trust Vercel/proxy headers so generated URLs and HTTPS detection work correctly
-        $middleware->trustProxies(at: '*');
+        // Vercel berada di balik reverse proxy. Tanpa ini, Laravel mengira
+        // request masuk lewat HTTP sehingga URL/redirect bisa salah.
+        $middleware->trustProxies(
+            at: '*',
+            headers: Request::HEADER_X_FORWARDED_FOR
+                | Request::HEADER_X_FORWARDED_HOST
+                | Request::HEADER_X_FORWARDED_PORT
+                | Request::HEADER_X_FORWARDED_PROTO,
+        );
 
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,

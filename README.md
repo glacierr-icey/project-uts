@@ -71,6 +71,22 @@ php artisan serve
 
 Buka `http://127.0.0.1:8000`.
 
+## Deploy ke Vercel (vercel-php)
+
+Aplikasi sudah disiapkan untuk runtime `vercel-php@0.7.4` (PHP 8.3):
+
+- `api/index.php` adalah entry point. Entry point ini membuat direktori writable di `/tmp`,
+  mengalihkan cache/compiled view/session ke `/tmp`, lalu menjalankan `migrate` + `seed`
+  otomatis pada request pertama ketika file SQLite masih kosong.
+- `vercel.json` meneruskan aset statik (`/build`, `/assets`, `/images`, `/favicon.ico`,
+  `/robots.txt`) langsung dari folder `public`, sisanya ke `api/index.php`.
+- File `.env` **tidak** ikut ter-deploy. Set variabel di Vercel Dashboard
+  (rujuk `.env.vercel.example`). Paling penting: `APP_KEY`, `APP_URL`, dan
+  `LOG_CHANNEL=stderr`.
+- `DB_DATABASE=/tmp/database.sqlite` bersifat **ephemeral**: data kembali kosong saat
+  cold start/redeploy. Untuk data persisten, pakai MySQL/Postgres eksternal dan set
+  `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` di Vercel.
+
 ## Pengujian
 
 ```bash
