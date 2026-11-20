@@ -149,7 +149,9 @@ class CustomerPortalTest extends TestCase
         $response = $this->get(route('portal.order.show', $order->invoice_number));
 
         $response->assertOk();
-        $response->assertSee('wa.me/6281928310718?text=', false);
+        $response->assertSee('wa.me/6287773845477?text=', false);
+        $response->assertDontSee('6281928310718', false);
+        $response->assertSee('0877-7384-5477');
         $response->assertSee('btn-wa-portal', false);
         $response->assertSee('https://t.me/pharmacy_payments_bot', false);
         $response->assertDontSee('tg://resolve', false);
@@ -162,7 +164,9 @@ class CustomerPortalTest extends TestCase
         $response = $this->get(route('portal.checkout'));
 
         $response->assertOk();
-        $response->assertSee('wa.me/6281928310718', false);
+        $response->assertSee('wa.me/6287773845477', false);
+        $response->assertDontSee('6281928310718', false);
+        $response->assertSee('0877-7384-5477');
         $response->assertSee('btn-wa-portal', false);
         $response->assertSee('https://t.me/pharmacy_payments_bot', false);
         $response->assertDontSee('tg://resolve', false);

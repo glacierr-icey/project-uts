@@ -13,26 +13,23 @@ return [
     'legal_name'=> 'Apotek Sehat Sehati Punggur',
     'tagline'   => 'Sehat dimulai dari langkah kecil. Belanja obat lebih mudah, kapan saja.',
     'address'   => 'Jl. Metro - Kotagajah, Dusun Tanggul Angin, Kec. Punggur, Kab. Lampung Tengah, Lampung',
-    'phone'     => '0819-2831-0718',
-    'whatsapp'  => '6281928310718',
+    'phone'     => '0877-7384-5477',
+    'whatsapp'  => '6287773845477',
     'email'     => 'halo@apoteksehatsehati.com',
 
     /*
     |--------------------------------------------------------------------------
-    | Konfirmasi Pembayaran via Telegram
+    | Kontak Konfirmasi Pembayaran
     |--------------------------------------------------------------------------
-    | Pelanggan dapat mengirim bukti pembayaran ke kontak Telegram apotek
-    | lewat deep-link (tanpa bot/token). Tombol memakai format
-    | tg://resolve?phone=<nomor internasional> agar langsung membuka chat
-    | di aplikasi Telegram pada ponsel. Nomor tampilan tetap disimpan untuk
-    | fallback bila deep-link tidak bisa dibuka di desktop/browser.
-    | notification_contact = nomor tujuan yang dipakai tombol cepat WhatsApp
-    | dan Telegram (0819-2831-0718 -> 6281928310718).
+    | phone / whatsapp = nomor WhatsApp utama (0877-7384-5477 -> 6287773845477)
+    | yang dipakai semua tautan wa.me di checkout, detail pesanan, dan halaman lain.
+    | telegram_* = kontak fallback Telegram (nomor lama) + URL bot HTTPS.
+    | notification_contact = nomor WhatsApp yang ditampilkan pada tombol cepat.
     */
     'telegram_phone'   => '6281928310718',
     'telegram_contact' => '0819-2831-0718',
     'telegram_bot_url' => 'https://t.me/pharmacy_payments_bot',
-    'notification_contact' => '0819-2831-0718',
+    'notification_contact' => '0877-7384-5477',
 
     'hours' => [
         ['day' => 'Senin - Jumat', 'time' => '07.30 - 21.00 WIB'],
