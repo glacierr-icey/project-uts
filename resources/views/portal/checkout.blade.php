@@ -484,44 +484,48 @@
             const paymentLabels = { cod: 'COD (Bayar di Tempat)', transfer: 'Transfer Bank', qris: 'QRIS' };
             const deliveryLabels = { pickup: 'Ambil sendiri di toko', delivery: 'Kirim ke alamat' };
 
+            const divider = '────────────────────';
             const lines = [
-                '🧾 RINGKASAN PESANAN - ' + storeName,
-                '',
-                'Pembeli    : ' + (fieldValue('customer_name') || '-') + ' (' + (fieldValue('customer_phone') || '-') + ')',
-                'Pembayaran : ' + (paymentLabels[payment] || payment.toUpperCase()),
-                'Pengiriman : ' + (deliveryLabels[delivery] || delivery.toUpperCase()),
-                '',
-                'RINCIAN PESANAN:',
+                '🧾 RINGKASAN PESANAN',
+                storeName,
+                divider,
+                '👤 Pemesan     : ' + (fieldValue('customer_name') || '-') + ' (' + (fieldValue('customer_phone') || '-') + ')',
+                '💳 Pembayaran  : ' + (paymentLabels[payment] || payment.toUpperCase()),
+                '🚚 Pengiriman  : ' + (deliveryLabels[delivery] || delivery.toUpperCase()),
+                divider,
+                '🛒 RINCIAN PESANAN',
             ];
 
             if (cart.length === 0) {
                 lines.push('• (keranjang masih kosong)');
             }
             cart.forEach((item) => {
+                lines.push('• ' + item.name);
                 lines.push(
-                    '• ' + item.name + ' x' + item.quantity + ' ' + (item.unit || 'pcs') +
-                    ' @ ' + formatRupiah(item.price) + ' = ' + formatRupiah(Number(item.price) * Number(item.quantity))
+                    '   ' + item.quantity + ' ' + (item.unit || 'pcs') + ' × ' +
+                    formatRupiah(item.price) + ' = ' + formatRupiah(Number(item.price) * Number(item.quantity))
                 );
             });
 
-            lines.push('');
-            lines.push('Subtotal : ' + formatRupiah(subtotal));
-            lines.push('Ongkir   : Gratis');
-            lines.push('TOTAL    : ' + formatRupiah(subtotal));
+            lines.push(divider);
+            lines.push('   Subtotal    ' + formatRupiah(subtotal));
+            lines.push('   Ongkir      Gratis');
+            lines.push('💰 TOTAL       ' + formatRupiah(subtotal));
+            lines.push(divider);
 
             if (delivery === 'delivery') {
                 const address = ['address_street', 'address_village', 'address_district', 'address_city', 'address_postal', 'address_notes']
                     .map(fieldValue)
                     .filter(Boolean)
                     .join(', ');
-                if (address) lines.push('', 'Alamat   : ' + address);
+                if (address) lines.push('📍 Alamat      : ' + address);
             }
 
             const notes = fieldValue('order_notes');
-            if (notes) lines.push('Catatan  : ' + notes);
+            if (notes) lines.push('📝 Catatan     : ' + notes);
 
             lines.push('');
-            lines.push('Mohon diproses. Terima kasih.');
+            lines.push('Mohon diproses. Terima kasih 🙏');
             return lines.join('\n');
         }
 

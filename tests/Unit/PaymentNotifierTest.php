@@ -31,5 +31,9 @@ class PaymentNotifierTest extends TestCase
         $result = app(PaymentNotifier::class)->send('Pesan uji');
 
         $this->assertFalse($result);
+        Http::assertSent(function ($request) {
+            return $request->url() === 'https://api.telegram.org/botdummy-token/sendMessage'
+                && $request['text'] === 'Pesan uji';
+        });
     }
 }

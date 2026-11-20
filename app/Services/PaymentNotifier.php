@@ -24,7 +24,7 @@ class PaymentNotifier
         return $this->send($this->buildMessage(
             $order,
             '🧾 PESANAN BARU',
-            'Menunggu konfirmasi petugas (pending)'
+            'Menunggu konfirmasi (pending)'
         ));
     }
 
@@ -36,7 +36,7 @@ class PaymentNotifier
         return $this->send($this->buildMessage(
             $order,
             '✅ PEMBAYARAN DIKONFIRMASI',
-            'Lunas / diproses'
+            'Lunas (paid)'
         ));
     }
 
@@ -50,26 +50,29 @@ class PaymentNotifier
         $subtotal = (float) $order->total_amount - (float) $order->delivery_fee;
         $deliveryFee = (float) $order->delivery_fee;
 
+        $divider = '────────────────────';
+
         $lines = [
             $title,
-            '',
-            'Invoice   : '.$order->invoice_number,
-            'Status    : '.$status,
-            'Pembayaran: '.$this->paymentLabel((string) $order->payment_method),
-            'Pengiriman: '.$this->deliveryLabel((string) $order->delivery_method),
-            'Pelanggan : '.($order->recipient_name ?: $order->customer?->name ?: '-')
+            (string) config('pharmacy.name'),
+            $divider,
+            '📌 Invoice     : '.$order->invoice_number,
+            '📊 Status      : '.$status,
+            '👤 Pemesan     : '.($order->recipient_name ?: $order->customer?->name ?: '-')
                 .' ('.($order->recipient_phone ?: $order->customer?->phone ?: '-').')',
-            '',
-            'RINCIAN PESANAN:',
+            '💳 Pembayaran  : '.$this->paymentLabel((string) $order->payment_method),
+            '🚚 Pengiriman  : '.$this->deliveryLabel((string) $order->delivery_method),
+            $divider,
+            '🛒 RINCIAN PESANAN',
         ];
 
         foreach ($order->details as $detail) {
             $name = $detail->productBatch?->product?->name ?? 'Obat';
             $unit = $detail->productBatch?->product?->unit ?? 'pcs';
 
+            $lines[] = '• '.$name;
             $lines[] = sprintf(
-                '• %s x%d %s @ Rp%s = Rp%s',
-                $name,
+                '   %d %s × Rp %s = Rp %s',
                 (int) $detail->quantity,
                 $unit,
                 $this->rupiah($detail->price),
@@ -77,22 +80,23 @@ class PaymentNotifier
             );
         }
 
-        $lines[] = '';
-        $lines[] = 'Subtotal : Rp '.$this->rupiah($subtotal);
-        $lines[] = 'Ongkir   : '.($deliveryFee > 0 ? 'Rp '.$this->rupiah($deliveryFee) : 'Gratis');
-        $lines[] = 'TOTAL    : Rp '.$this->rupiah($order->total_amount);
+        $lines[] = $divider;
+        $lines[] = '   Subtotal    Rp '.$this->rupiah($subtotal);
+        $lines[] = '   Ongkir      '.($deliveryFee > 0 ? 'Rp '.$this->rupiah($deliveryFee) : 'Gratis');
+        $lines[] = '💰 TOTAL       Rp '.$this->rupiah($order->total_amount);
+        $lines[] = $divider;
 
         if ($order->delivery_address) {
-            $lines[] = '';
-            $lines[] = 'Alamat   : '.preg_replace('/\s+/', ' ', trim($order->delivery_address));
+            $lines[] = '📍 Alamat      : '.preg_replace('/\s+/', ' ', trim($order->delivery_address));
         }
 
         if ($order->order_notes) {
-            $lines[] = 'Catatan  : '.$order->order_notes;
+            $lines[] = '📝 Catatan     : '.$order->order_notes;
         }
 
+        $lines[] = '🔗 Detail      : '.route('portal.order.show', $order->invoice_number, true);
         $lines[] = '';
-        $lines[] = 'Detail pesanan: '.route('portal.order.show', $order->invoice_number, true);
+        $lines[] = 'Terima kasih sudah berbelanja 🙏';
 
         return implode("\n", $lines);
     }

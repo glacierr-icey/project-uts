@@ -125,13 +125,18 @@ class CustomerPortalTest extends TestCase
         $message = app(PaymentNotifier::class)->buildMessage(
             $order,
             '🧾 PESANAN BARU',
-            'Menunggu konfirmasi petugas (pending)'
+            'Menunggu konfirmasi (pending)'
         );
 
-        $this->assertStringContainsString($order->invoice_number, $message);
-        $this->assertStringContainsString('Paracetamol 500mg x2', $message);
-        $this->assertStringContainsString('Rp 7.000', $message);
-        $this->assertStringContainsString('pending', $message);
+        $this->assertStringContainsString('📌 Invoice     : '.$order->invoice_number, $message);
+        $this->assertStringContainsString('📊 Status      : Menunggu konfirmasi (pending)', $message);
+        $this->assertStringContainsString('💳 Pembayaran  : COD', $message);
+        $this->assertStringContainsString('🛒 RINCIAN PESANAN', $message);
+        $this->assertStringContainsString('• Paracetamol 500mg', $message);
+        $this->assertStringContainsString('2 Strip × Rp 3.500 = Rp 7.000', $message);
+        $this->assertStringContainsString('💰 TOTAL       Rp 7.000', $message);
+        $this->assertStringContainsString('────────────────────', $message);
+        $this->assertStringContainsString('Terima kasih sudah berbelanja 🙏', $message);
     }
 
     public function test_order_detail_has_primary_whatsapp_and_https_telegram_bot(): void

@@ -303,7 +303,7 @@ class CustomerPortalController extends Controller
         $confirmationMessage = $notifier->buildMessage(
             $order,
             $order->payment_status === 'paid' ? '✅ PEMBAYARAN DIKONFIRMASI' : '🧾 KONFIRMASI PEMBAYARAN',
-            $order->payment_status === 'paid' ? 'Lunas / diproses' : 'Menunggu konfirmasi petugas (pending)'
+            $order->payment_status === 'paid' ? 'Lunas (paid)' : 'Menunggu konfirmasi (pending)'
         );
 
         return view('portal.order', [
