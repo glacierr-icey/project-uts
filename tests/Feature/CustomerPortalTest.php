@@ -124,19 +124,21 @@ class CustomerPortalTest extends TestCase
 
         $message = app(PaymentNotifier::class)->buildMessage(
             $order,
-            "\u{1F9FE} PESANAN BARU",
+            '[ PESANAN BARU ]',
             'Menunggu konfirmasi (pending)'
         );
 
-        $this->assertStringContainsString("\u{1F4CC} Invoice     : ".$order->invoice_number, $message);
-        $this->assertStringContainsString("\u{1F4CA} Status      : Menunggu konfirmasi (pending)", $message);
-        $this->assertStringContainsString("\u{1F4B3} Pembayaran  : COD", $message);
-        $this->assertStringContainsString("\u{1F6D2} RINCIAN PESANAN", $message);
-        $this->assertStringContainsString("\u{2022} Paracetamol 500mg", $message);
-        $this->assertStringContainsString("2 Strip \u{00D7} Rp 3.500 = Rp 7.000", $message);
-        $this->assertStringContainsString("\u{1F4B0} TOTAL       Rp 7.000", $message);
-        $this->assertStringContainsString(str_repeat("\u{2500}", 20), $message);
-        $this->assertStringContainsString("Terima kasih sudah berbelanja \u{1F64F}", $message);
+        $this->assertStringContainsString('[ PESANAN BARU ]', $message);
+        $this->assertStringContainsString('Invoice     : '.$order->invoice_number, $message);
+        $this->assertStringContainsString('Status      : Menunggu konfirmasi (pending)', $message);
+        $this->assertStringContainsString('Pembayaran  : COD', $message);
+        $this->assertStringContainsString('RINCIAN PESANAN', $message);
+        $this->assertStringContainsString('- Paracetamol 500mg', $message);
+        $this->assertStringContainsString('2 Strip x Rp 3.500 = Rp 7.000', $message);
+        $this->assertStringContainsString('TOTAL       Rp 7.000', $message);
+        $this->assertStringContainsString(str_repeat('-', 20), $message);
+        $this->assertStringContainsString('Terima kasih sudah berbelanja.', $message);
+        $this->assertSame(0, preg_match('/[^\x00-\x7F]/', $message), 'Pesan tidak boleh bergantung pada glyph/font emoji.');
     }
 
     public function test_order_detail_has_primary_whatsapp_and_https_telegram_bot(): void
@@ -155,7 +157,8 @@ class CustomerPortalTest extends TestCase
         $response->assertSee('btn-wa-portal', false);
         $response->assertSee('https://t.me/pharmacy_payments_bot', false);
         $response->assertDontSee('tg://resolve', false);
-        $response->assertSee('%F0%9F', false); // emoji ter-encode UTF-8, bukan "?"
+        $response->assertDontSee('%EF%BF%BD', false); // tidak ada karakter rusak (U+FFFD)
+        $response->assertSee('RINCIAN+PESANAN', false);
         $response->assertSee('Rp 3.500');
     }
 

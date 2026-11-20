@@ -446,22 +446,9 @@
         const whatsappNumber = @json(config('pharmacy.whatsapp'));
         const telegramBotUrl = @json(config('pharmacy.telegram_bot_url'));
 
-        // Emoji/simbol dibangun dari code point agar tidak bergantung pada encoding
-        // file saat dirender atau saat di-encode ke tautan WhatsApp/Telegram.
-        const SYMBOL = {
-            receipt: String.fromCodePoint(0x1F9FE), // U+1F9FE
-            person:  String.fromCodePoint(0x1F464), // U+1F464
-            card:    String.fromCodePoint(0x1F4B3), // U+1F4B3
-            truck:   String.fromCodePoint(0x1F69A), // U+1F69A
-            cart:    String.fromCodePoint(0x1F6D2), // U+1F6D2
-            money:   String.fromCodePoint(0x1F4B0), // U+1F4B0
-            pin:     String.fromCodePoint(0x1F4CD), // U+1F4CD
-            memo:    String.fromCodePoint(0x1F4DD), // U+1F4DD
-            thanks:  String.fromCodePoint(0x1F64F), // U+1F64F
-            bullet:  String.fromCodePoint(0x2022),  // U+2022
-            times:   String.fromCodePoint(0x00D7),  // U+00D7
-            divider: String.fromCodePoint(0x2500).repeat(20), // U+2500 x20
-        };
+        // Ringkasan memakai penanda ASCII agar tidak bergantung pada font emoji.
+        // (Emoji sering tampil sebagai kotak "?" di browser/host tanpa glyph emoji.)
+        const DIVIDER = '-'.repeat(20);
 
         const formatRupiah = (value) => 'Rp ' + Number(value || 0).toLocaleString('id-ID');
         const escapeHtml = (text) => String(text ?? '').replace(/[&<>"']/g, function (char) {
@@ -502,48 +489,47 @@
             const paymentLabels = { cod: 'COD (Bayar di Tempat)', transfer: 'Transfer Bank', qris: 'QRIS' };
             const deliveryLabels = { pickup: 'Ambil sendiri di toko', delivery: 'Kirim ke alamat' };
 
-            const divider = SYMBOL.divider;
             const lines = [
-                SYMBOL.receipt + ' RINGKASAN PESANAN',
+                '[ RINGKASAN PESANAN ]',
                 storeName,
-                divider,
-                SYMBOL.person + ' Pemesan     : ' + (fieldValue('customer_name') || '-') + ' (' + (fieldValue('customer_phone') || '-') + ')',
-                SYMBOL.card + ' Pembayaran  : ' + (paymentLabels[payment] || payment.toUpperCase()),
-                SYMBOL.truck + ' Pengiriman  : ' + (deliveryLabels[delivery] || delivery.toUpperCase()),
-                divider,
-                SYMBOL.cart + ' RINCIAN PESANAN',
+                DIVIDER,
+                'Pemesan     : ' + (fieldValue('customer_name') || '-') + ' (' + (fieldValue('customer_phone') || '-') + ')',
+                'Pembayaran  : ' + (paymentLabels[payment] || payment.toUpperCase()),
+                'Pengiriman  : ' + (deliveryLabels[delivery] || delivery.toUpperCase()),
+                DIVIDER,
+                'RINCIAN PESANAN',
             ];
 
             if (cart.length === 0) {
-                lines.push(SYMBOL.bullet + ' (keranjang masih kosong)');
+                lines.push('- (keranjang masih kosong)');
             }
             cart.forEach((item) => {
-                lines.push(SYMBOL.bullet + ' ' + item.name);
+                lines.push('- ' + item.name);
                 lines.push(
-                    '   ' + item.quantity + ' ' + (item.unit || 'pcs') + ' ' + SYMBOL.times + ' ' +
+                    '   ' + item.quantity + ' ' + (item.unit || 'pcs') + ' x ' +
                     formatRupiah(item.price) + ' = ' + formatRupiah(Number(item.price) * Number(item.quantity))
                 );
             });
 
-            lines.push(divider);
+            lines.push(DIVIDER);
             lines.push('   Subtotal    ' + formatRupiah(subtotal));
             lines.push('   Ongkir      Gratis');
-            lines.push(SYMBOL.money + ' TOTAL       ' + formatRupiah(subtotal));
-            lines.push(divider);
+            lines.push('TOTAL       ' + formatRupiah(subtotal));
+            lines.push(DIVIDER);
 
             if (delivery === 'delivery') {
                 const address = ['address_street', 'address_village', 'address_district', 'address_city', 'address_postal', 'address_notes']
                     .map(fieldValue)
                     .filter(Boolean)
                     .join(', ');
-                if (address) lines.push(SYMBOL.pin + ' Alamat      : ' + address);
+                if (address) lines.push('Alamat      : ' + address);
             }
 
             const notes = fieldValue('order_notes');
-            if (notes) lines.push(SYMBOL.memo + ' Catatan     : ' + notes);
+            if (notes) lines.push('Catatan     : ' + notes);
 
             lines.push('');
-            lines.push('Mohon diproses. Terima kasih ' + SYMBOL.thanks);
+            lines.push('Mohon diproses. Terima kasih.');
             return lines.join('\n');
         }
 

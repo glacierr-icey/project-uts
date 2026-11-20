@@ -42,7 +42,8 @@
         * { box-sizing: border-box; }
 
         body.portal-body {
-            font-family: 'Inter', sans-serif;
+            /* Fallback emoji font disertakan bila suatu hari ada glyph emoji di UI. */
+            font-family: 'Inter', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
             -webkit-font-smoothing: antialiased;
             color: var(--ink-700);
             background-color: var(--portal-bg);

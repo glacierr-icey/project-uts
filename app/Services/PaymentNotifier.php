@@ -23,7 +23,7 @@ class PaymentNotifier
     {
         return $this->send($this->buildMessage(
             $order,
-            "\u{1F9FE} PESANAN BARU",
+            '[ PESANAN BARU ]',
             'Menunggu konfirmasi (pending)'
         ));
     }
@@ -35,7 +35,7 @@ class PaymentNotifier
     {
         return $this->send($this->buildMessage(
             $order,
-            "\u{2705} PEMBAYARAN DIKONFIRMASI",
+            '[ PEMBAYARAN DIKONFIRMASI ]',
             'Lunas (paid)'
         ));
     }
@@ -50,31 +50,32 @@ class PaymentNotifier
         $subtotal = (float) $order->total_amount - (float) $order->delivery_fee;
         $deliveryFee = (float) $order->delivery_fee;
 
-        // Escape sequence Unicode dipakai agar emoji tidak rusak saat file
-        // dipindah/deploy dengan encoding yang berbeda (mis. Vercel/Windows).
-        $divider = str_repeat("\u{2500}", 20);
+        // Teks ringkasan sengaja memakai penanda ASCII agar tidak bergantung
+        // pada font emoji. Emoji sering tampil sebagai kotak "?" di host/browser
+        // yang tidak memiliki glyph emoji, meskipun bytes UTF-8-nya sudah benar.
+        $divider = str_repeat('-', 20);
 
         $lines = [
             $title,
             (string) config('pharmacy.name'),
             $divider,
-            "\u{1F4CC} Invoice     : ".$order->invoice_number,
-            "\u{1F4CA} Status      : ".$status,
-            "\u{1F464} Pemesan     : ".($order->recipient_name ?: $order->customer?->name ?: '-')
+            'Invoice     : '.$order->invoice_number,
+            'Status      : '.$status,
+            'Pemesan     : '.($order->recipient_name ?: $order->customer?->name ?: '-')
                 .' ('.($order->recipient_phone ?: $order->customer?->phone ?: '-').')',
-            "\u{1F4B3} Pembayaran  : ".$this->paymentLabel((string) $order->payment_method),
-            "\u{1F69A} Pengiriman  : ".$this->deliveryLabel((string) $order->delivery_method),
+            'Pembayaran  : '.$this->paymentLabel((string) $order->payment_method),
+            'Pengiriman  : '.$this->deliveryLabel((string) $order->delivery_method),
             $divider,
-            "\u{1F6D2} RINCIAN PESANAN",
+            'RINCIAN PESANAN',
         ];
 
         foreach ($order->details as $detail) {
             $name = $detail->productBatch?->product?->name ?? 'Obat';
             $unit = $detail->productBatch?->product?->unit ?? 'pcs';
 
-            $lines[] = "\u{2022} ".$name;
+            $lines[] = '- '.$name;
             $lines[] = sprintf(
-                "   %d %s \u{00D7} Rp %s = Rp %s",
+                '   %d %s x Rp %s = Rp %s',
                 (int) $detail->quantity,
                 $unit,
                 $this->rupiah($detail->price),
@@ -85,20 +86,20 @@ class PaymentNotifier
         $lines[] = $divider;
         $lines[] = '   Subtotal    Rp '.$this->rupiah($subtotal);
         $lines[] = '   Ongkir      '.($deliveryFee > 0 ? 'Rp '.$this->rupiah($deliveryFee) : 'Gratis');
-        $lines[] = "\u{1F4B0} TOTAL       Rp ".$this->rupiah($order->total_amount);
+        $lines[] = 'TOTAL       Rp '.$this->rupiah($order->total_amount);
         $lines[] = $divider;
 
         if ($order->delivery_address) {
-            $lines[] = "\u{1F4CD} Alamat      : ".preg_replace('/\s+/', ' ', trim($order->delivery_address));
+            $lines[] = 'Alamat      : '.preg_replace('/\s+/', ' ', trim($order->delivery_address));
         }
 
         if ($order->order_notes) {
-            $lines[] = "\u{1F4DD} Catatan     : ".$order->order_notes;
+            $lines[] = 'Catatan     : '.$order->order_notes;
         }
 
-        $lines[] = "\u{1F517} Detail      : ".route('portal.order.show', $order->invoice_number, true);
+        $lines[] = 'Detail      : '.route('portal.order.show', $order->invoice_number, true);
         $lines[] = '';
-        $lines[] = "Terima kasih sudah berbelanja \u{1F64F}";
+        $lines[] = 'Terima kasih sudah berbelanja.';
 
         return implode("\n", $lines);
     }
