@@ -31,6 +31,7 @@ return [
     */
     'telegram_phone'   => '6281928310718',
     'telegram_contact' => '0819-2831-0718',
+    'telegram_bot_url' => 'https://t.me/pharmacy_payments_bot',
     'notification_contact' => '0819-2831-0718',
 
     'hours' => [

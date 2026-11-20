@@ -134,7 +134,7 @@ class CustomerPortalTest extends TestCase
         $this->assertStringContainsString('pending', $message);
     }
 
-    public function test_order_detail_has_prefilled_whatsapp_and_telegram_summary(): void
+    public function test_order_detail_has_primary_whatsapp_and_https_telegram_bot(): void
     {
         config()->set('services.telegram.bot_token', null);
         config()->set('services.telegram.chat_id', null);
@@ -145,8 +145,21 @@ class CustomerPortalTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('wa.me/6281928310718?text=', false);
-        $response->assertSee('tg://resolve?phone=6281928310718&text=', false);
+        $response->assertSee('btn-wa-portal', false);
+        $response->assertSee('https://t.me/pharmacy_payments_bot', false);
+        $response->assertDontSee('tg://resolve', false);
         $response->assertSee('Rp 3.500');
+    }
+
+    public function test_checkout_uses_primary_whatsapp_and_https_telegram_bot(): void
+    {
+        $response = $this->get(route('portal.checkout'));
+
+        $response->assertOk();
+        $response->assertSee('wa.me/6281928310718', false);
+        $response->assertSee('btn-wa-portal', false);
+        $response->assertSee('https://t.me/pharmacy_payments_bot', false);
+        $response->assertDontSee('tg://resolve', false);
     }
 
     private function makeOnlineOrder(int $quantity): SalesTransaction

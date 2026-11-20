@@ -292,19 +292,7 @@
                     </div>
                     <div class="alert alert-portal alert-success mt-3 mb-0" style="font-size: 11px;">
                         <i class="bi bi-whatsapp me-1"></i>
-                        Kirim bukti transfer ke
-                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode($confirmationMessage) }}"
-                           target="_blank" rel="noopener" class="fw-bold text-decoration-none">WhatsApp apotek</a>
-                        agar pesanan segera diproses.
-                    </div>
-                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}&text={{ urlencode($confirmationMessage) }}"
-                           class="btn btn-sm btn-portal-outline"
-                           target="_blank" rel="noopener"
-                           data-copy-on-click="{{ $confirmationMessage }}">
-                            <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
-                        </a>
-                        <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
+                        Setelah transfer, kirim bukti lewat tombol WhatsApp di bawah agar pesanan segera diproses.
                     </div>
                 @elseif ($order->payment_method === 'qris')
                     <p class="checkout-note mb-3">
@@ -325,18 +313,7 @@
                         </small>
                     </div>
                     <div class="alert alert-portal alert-success mt-3 mb-0" style="font-size: 11px;">
-                        Sudah bayar? Kirim bukti ke
-                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode($confirmationMessage) }}"
-                           target="_blank" rel="noopener" class="fw-bold text-decoration-none">WhatsApp apotek</a>.
-                    </div>
-                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}&text={{ urlencode($confirmationMessage) }}"
-                           class="btn btn-sm btn-portal-outline"
-                           target="_blank" rel="noopener"
-                           data-copy-on-click="{{ $confirmationMessage }}">
-                            <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
-                        </a>
-                        <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
+                        Sudah bayar? Kirim bukti lewat tombol WhatsApp di bawah agar pesanan segera diproses.
                     </div>
                 @else
                     <p class="checkout-note mb-3">
@@ -350,20 +327,33 @@
                             Siapkan uang pas bila memungkinkan. Petugas akan memberikan struk pembayaran saat serah terima.
                         </div>
                     </div>
-                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode($confirmationMessage) }}"
-                           target="_blank" rel="noopener" class="btn btn-sm btn-portal">
-                            <i class="bi bi-whatsapp me-1"></i>Konfirmasi via WhatsApp
-                        </a>
-                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}&text={{ urlencode($confirmationMessage) }}"
-                           class="btn btn-sm btn-portal-outline"
-                           target="_blank" rel="noopener"
-                           data-copy-on-click="{{ $confirmationMessage }}">
-                            <i class="bi bi-telegram me-1"></i>Konfirmasi via Telegram
-                        </a>
-                        <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
+                    <div class="alert alert-portal alert-success mt-3 mb-0" style="font-size: 11px;">
+                        <i class="bi bi-whatsapp me-1"></i>
+                        Konfirmasi COD lewat tombol WhatsApp di bawah agar petugas menyiapkan pesanan.
                     </div>
                 @endif
+
+                {{-- Tombol konfirmasi utama: WhatsApp (HTTPS, selalu bisa diklik di browser) --}}
+                <div class="mt-3 pt-3" style="border-top: 1px dashed rgba(148,163,184,.28);">
+                    <div class="checkout-note mb-2">
+                        Ringkasan pesanan dan nominal
+                        <strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong>
+                        sudah terisi otomatis.
+                    </div>
+                    <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode($confirmationMessage) }}"
+                       target="_blank" rel="noopener" class="btn btn-wa-portal w-100">
+                        <i class="bi bi-whatsapp me-2"></i>Konfirmasi via WhatsApp
+                    </a>
+                    <a href="{{ config('pharmacy.telegram_bot_url') }}"
+                       target="_blank" rel="noopener" class="btn btn-sm btn-portal-outline w-100 mt-2"
+                       data-copy-on-click="{{ $confirmationMessage }}">
+                        <i class="bi bi-telegram me-1"></i>Buka Bot Telegram (opsional)
+                    </a>
+                    <div class="checkout-note mt-2">
+                        Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong>
+                        — ringkasan otomatis disalin saat tombol diklik.
+                    </div>
+                </div>
             </div>
 
             <div class="portal-card order-card mb-3">

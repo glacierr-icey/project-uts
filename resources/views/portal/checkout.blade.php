@@ -281,15 +281,20 @@
                         </div>
                         <div class="checkout-note mt-2">
                             <i class="bi bi-whatsapp me-1" style="color: #16a34a;"></i>
-                            Setelah transfer, kirim bukti pembayaran ke WhatsApp apotek agar pesanan segera diproses.
+                            Setelah transfer, kirim bukti pembayaran lewat tombol WhatsApp di bawah agar pesanan segera diproses.
                         </div>
-                        <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
-                            <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
-                               class="btn btn-sm btn-portal-outline" target="_blank" rel="noopener"
-                               data-copy-on-click="Konfirmasi pembayaran pesanan {{ config('pharmacy.name') }}">
-                                <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
-                            </a>
-                            <span class="checkout-note">Kontak Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
+                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}" data-wa-summary
+                           class="btn btn-wa-portal w-100 mt-2" target="_blank" rel="noopener">
+                            <i class="bi bi-whatsapp me-1"></i>Kirim Bukti via WhatsApp
+                        </a>
+                        <a href="{{ config('pharmacy.telegram_bot_url') }}" data-tg-bot-link
+                           class="btn btn-sm btn-portal-outline w-100 mt-2" target="_blank" rel="noopener"
+                           data-copy-on-click="Konfirmasi pembayaran pesanan {{ config('pharmacy.name') }}">
+                            <i class="bi bi-telegram me-1"></i>Buka Bot Telegram (opsional)
+                        </a>
+                        <div class="checkout-note mt-1">
+                            Kontak Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong>
+                            — ringkasan otomatis tersalin saat tombol diklik.
                         </div>
                     </div>
 
@@ -316,13 +321,18 @@
                                         <span class="soft-chip" style="font-size: 10px; padding: 4px 8px;">{{ $wallet }}</span>
                                     @endforeach
                                 </div>
-                                <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
-                                    <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
-                                       class="btn btn-sm btn-portal-outline" target="_blank" rel="noopener"
-                                       data-copy-on-click="Konfirmasi QRIS pesanan {{ config('pharmacy.name') }}">
-                                        <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
-                                    </a>
-                                    <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
+                                <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}" data-wa-summary
+                                   class="btn btn-wa-portal w-100 mt-2" target="_blank" rel="noopener">
+                                    <i class="bi bi-whatsapp me-1"></i>Kirim Bukti via WhatsApp
+                                </a>
+                                <a href="{{ config('pharmacy.telegram_bot_url') }}" data-tg-bot-link
+                                   class="btn btn-sm btn-portal-outline w-100 mt-2" target="_blank" rel="noopener"
+                                   data-copy-on-click="Konfirmasi QRIS pesanan {{ config('pharmacy.name') }}">
+                                    <i class="bi bi-telegram me-1"></i>Buka Bot Telegram (opsional)
+                                </a>
+                                <div class="checkout-note mt-1">
+                                    Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong>
+                                    — ringkasan otomatis tersalin saat tombol diklik.
                                 </div>
                             </div>
                         </div>
@@ -377,17 +387,22 @@
 
                     {{-- Tombol kontak cepat dengan ringkasan otomatis --}}
                     <div class="checkout-note mt-2 mb-2">
-                        Atau kirim ringkasan pesanan ini langsung ke apotek:
+                        Ringkasan pesanan dan nominal <strong>terisi otomatis</strong> di pesan WhatsApp Anda.
                     </div>
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <a id="checkoutWhatsappLink" href="https://wa.me/{{ config('pharmacy.whatsapp') }}"
-                           target="_blank" rel="noopener" class="btn btn-sm btn-portal flex-fill">
-                            <i class="bi bi-whatsapp me-1"></i>WhatsApp
-                        </a>
-                        <a id="checkoutTelegramLink" href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
-                           target="_blank" rel="noopener" class="btn btn-sm btn-portal-outline flex-fill">
-                            <i class="bi bi-telegram me-1"></i>Telegram
-                        </a>
+                    <a id="checkoutWhatsappLink" data-wa-summary
+                       href="https://wa.me/{{ config('pharmacy.whatsapp') }}"
+                       target="_blank" rel="noopener" class="btn btn-wa-portal w-100">
+                        <i class="bi bi-whatsapp me-2"></i>Kirim Ringkasan via WhatsApp
+                    </a>
+                    <a id="checkoutTelegramLink" data-tg-bot-link
+                       href="{{ config('pharmacy.telegram_bot_url') }}"
+                       target="_blank" rel="noopener" class="btn btn-sm btn-portal-outline w-100 mt-2"
+                       data-copy-on-click="">
+                        <i class="bi bi-telegram me-1"></i>Buka Bot Telegram (opsional)
+                    </a>
+                    <div class="checkout-note mt-2 mb-3">
+                        Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong>
+                        — pesan ringkasan otomatis disalin agar bisa ditempel.
                     </div>
 
                     <button type="submit" class="btn btn-portal w-100" id="submitOrderBtn" disabled>
@@ -425,11 +440,11 @@
         const totalElement = document.getElementById('checkoutTotal');
         const submitButton = document.getElementById('submitOrderBtn');
         const addressFields = document.getElementById('deliveryAddressFields');
-        const whatsappLink = document.getElementById('checkoutWhatsappLink');
-        const telegramLink = document.getElementById('checkoutTelegramLink');
+        const whatsappLinks = document.querySelectorAll('[data-wa-summary]');
+        const telegramLinks = document.querySelectorAll('[data-tg-bot-link]');
         const storeName = @json(config('pharmacy.name'));
         const whatsappNumber = @json(config('pharmacy.whatsapp'));
-        const telegramPhone = @json(config('pharmacy.telegram_phone'));
+        const telegramBotUrl = @json(config('pharmacy.telegram_bot_url'));
         const formatRupiah = (value) => 'Rp ' + Number(value || 0).toLocaleString('id-ID');
         const escapeHtml = (text) => String(text ?? '').replace(/[&<>"']/g, function (char) {
             return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char];
@@ -516,13 +531,14 @@
             const message = buildContactMessage(cart, subtotal);
             const encoded = encodeURIComponent(message);
 
-            if (whatsappLink) {
-                whatsappLink.href = 'https://wa.me/' + whatsappNumber + '?text=' + encoded;
-            }
-            if (telegramLink) {
-                telegramLink.href = 'tg://resolve?phone=' + telegramPhone + '&text=' + encoded;
-                telegramLink.dataset.copyOnClick = message;
-            }
+            whatsappLinks.forEach((link) => {
+                link.href = 'https://wa.me/' + whatsappNumber + '?text=' + encoded;
+            });
+            telegramLinks.forEach((link) => {
+                // URL bot HTTPS agar tidak blank di browser desktop.
+                link.href = telegramBotUrl;
+                link.dataset.copyOnClick = message;
+            });
         }
 
         function renderSummary() {

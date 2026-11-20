@@ -116,6 +116,20 @@
             box-shadow: 0 12px 26px rgba(6, 182, 212, 0.4);
         }
         .btn-portal:disabled { opacity: .55; transform: none; box-shadow: none; color: #fff; }
+
+        /* Tombol konfirmasi WhatsApp dibuat lebih menonjol & area klik besar. */
+        .btn-wa-portal {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: #fff; border: none; font-weight: 800; border-radius: 13px;
+            padding: 14px 20px; font-size: 13px; line-height: 1.2;
+            box-shadow: 0 10px 22px rgba(22, 163, 74, .28), inset 0 1px 1px rgba(255, 255, 255, .28);
+            transition: all .2s ease;
+        }
+        .btn-wa-portal:hover, .btn-wa-portal:focus {
+            color: #fff; transform: translateY(-1px); filter: brightness(1.04);
+            box-shadow: 0 14px 28px rgba(22, 163, 74, .38);
+        }
+
         .btn-portal-outline {
             border: 1.5px solid rgba(6, 182, 212, 0.4);
             background: rgba(255, 255, 255, 0.78);
