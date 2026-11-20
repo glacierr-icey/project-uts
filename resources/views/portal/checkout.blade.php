@@ -375,6 +375,21 @@
                         </div>
                     </div>
 
+                    {{-- Tombol kontak cepat dengan ringkasan otomatis --}}
+                    <div class="checkout-note mt-2 mb-2">
+                        Atau kirim ringkasan pesanan ini langsung ke apotek:
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <a id="checkoutWhatsappLink" href="https://wa.me/{{ config('pharmacy.whatsapp') }}"
+                           target="_blank" rel="noopener" class="btn btn-sm btn-portal flex-fill">
+                            <i class="bi bi-whatsapp me-1"></i>WhatsApp
+                        </a>
+                        <a id="checkoutTelegramLink" href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                           target="_blank" rel="noopener" class="btn btn-sm btn-portal-outline flex-fill">
+                            <i class="bi bi-telegram me-1"></i>Telegram
+                        </a>
+                    </div>
+
                     <button type="submit" class="btn btn-portal w-100" id="submitOrderBtn" disabled>
                         <i class="bi bi-send-check me-1"></i>Kirim Pesanan
                     </button>
@@ -410,6 +425,11 @@
         const totalElement = document.getElementById('checkoutTotal');
         const submitButton = document.getElementById('submitOrderBtn');
         const addressFields = document.getElementById('deliveryAddressFields');
+        const whatsappLink = document.getElementById('checkoutWhatsappLink');
+        const telegramLink = document.getElementById('checkoutTelegramLink');
+        const storeName = @json(config('pharmacy.name'));
+        const whatsappNumber = @json(config('pharmacy.whatsapp'));
+        const telegramPhone = @json(config('pharmacy.telegram_phone'));
         const formatRupiah = (value) => 'Rp ' + Number(value || 0).toLocaleString('id-ID');
         const escapeHtml = (text) => String(text ?? '').replace(/[&<>"']/g, function (char) {
             return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char];
@@ -432,6 +452,77 @@
                     };
                 })
                 .filter(Boolean);
+        }
+
+        function fieldValue(id) {
+            return (document.getElementById(id)?.value || '').trim();
+        }
+
+        /**
+         * Ringkasan yang sama dengan format notifikasi bot, dipakai sebagai
+         * teks awal tautan WhatsApp / Telegram sehingga nomor invoice tidak
+         * diperlukan saat checkout (belum dibuat).
+         */
+        function buildContactMessage(cart, subtotal) {
+            const payment = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
+            const delivery = document.querySelector('input[name="delivery_method"]:checked')?.value || 'pickup';
+            const paymentLabels = { cod: 'COD (Bayar di Tempat)', transfer: 'Transfer Bank', qris: 'QRIS' };
+            const deliveryLabels = { pickup: 'Ambil sendiri di toko', delivery: 'Kirim ke alamat' };
+
+            const lines = [
+                '🧾 RINGKASAN PESANAN - ' + storeName,
+                '',
+                'Pembeli    : ' + (fieldValue('customer_name') || '-') + ' (' + (fieldValue('customer_phone') || '-') + ')',
+                'Pembayaran : ' + (paymentLabels[payment] || payment.toUpperCase()),
+                'Pengiriman : ' + (deliveryLabels[delivery] || delivery.toUpperCase()),
+                '',
+                'RINCIAN PESANAN:',
+            ];
+
+            if (cart.length === 0) {
+                lines.push('• (keranjang masih kosong)');
+            }
+            cart.forEach((item) => {
+                lines.push(
+                    '• ' + item.name + ' x' + item.quantity + ' ' + (item.unit || 'pcs') +
+                    ' @ ' + formatRupiah(item.price) + ' = ' + formatRupiah(Number(item.price) * Number(item.quantity))
+                );
+            });
+
+            lines.push('');
+            lines.push('Subtotal : ' + formatRupiah(subtotal));
+            lines.push('Ongkir   : Gratis');
+            lines.push('TOTAL    : ' + formatRupiah(subtotal));
+
+            if (delivery === 'delivery') {
+                const address = ['address_street', 'address_village', 'address_district', 'address_city', 'address_postal', 'address_notes']
+                    .map(fieldValue)
+                    .filter(Boolean)
+                    .join(', ');
+                if (address) lines.push('', 'Alamat   : ' + address);
+            }
+
+            const notes = fieldValue('order_notes');
+            if (notes) lines.push('Catatan  : ' + notes);
+
+            lines.push('');
+            lines.push('Mohon diproses. Terima kasih.');
+            return lines.join('\n');
+        }
+
+        function refreshContactLinks() {
+            const cart = currentCart();
+            const subtotal = cart.reduce((sum, item) => sum + (Number(item.price) * Number(item.quantity)), 0);
+            const message = buildContactMessage(cart, subtotal);
+            const encoded = encodeURIComponent(message);
+
+            if (whatsappLink) {
+                whatsappLink.href = 'https://wa.me/' + whatsappNumber + '?text=' + encoded;
+            }
+            if (telegramLink) {
+                telegramLink.href = 'tg://resolve?phone=' + telegramPhone + '&text=' + encoded;
+                telegramLink.dataset.copyOnClick = message;
+            }
         }
 
         function renderSummary() {
@@ -480,6 +571,7 @@
             })));
 
             submitButton.disabled = cart.length === 0;
+            refreshContactLinks();
         }
 
         function updateDeliveryFields() {
@@ -490,6 +582,7 @@
             addressFields.querySelectorAll('[data-address-required]').forEach((field) => {
                 field.required = isDelivery;
             });
+            refreshContactLinks();
         }
 
         function updatePaymentPanels() {
@@ -497,7 +590,13 @@
             document.querySelectorAll('[data-payment-panel]').forEach((panel) => {
                 panel.classList.toggle('d-none', panel.dataset.paymentPanel !== selected);
             });
+            refreshContactLinks();
         }
+
+        // Ikuti perubahan data pemesan/alamat/catatan agar pesan selalu akurat.
+        form.addEventListener('input', (event) => {
+            if (event.target.matches('input, textarea')) refreshContactLinks();
+        });
 
         document.querySelectorAll('input[name="delivery_method"]').forEach((radio) => {
             radio.addEventListener('change', updateDeliveryFields);

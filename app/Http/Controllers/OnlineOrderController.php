@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductBatch;
 use App\Models\SalesTransaction;
+use App\Services\PaymentNotifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -57,7 +58,7 @@ class OnlineOrderController extends Controller
     /**
      * Tandai pesanan online sudah dibayar / dikonfirmasi oleh petugas.
      */
-    public function markPaid(SalesTransaction $order): RedirectResponse
+    public function markPaid(SalesTransaction $order, PaymentNotifier $notifier): RedirectResponse
     {
         abort_unless($order->order_channel === 'online', 404);
 
@@ -68,6 +69,9 @@ class OnlineOrderController extends Controller
         }
 
         $order->update(['payment_status' => 'paid']);
+
+        // Kabari petugas via Telegram Bot API bila token/chat ID tersedia.
+        $notifier->orderPaid($order);
 
         return back()->with('success', "Pesanan {$order->invoice_number} berhasil dikonfirmasi dan ditandai lunas.");
     }

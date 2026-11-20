@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Notifikasi Telegram (opsional)
+    |--------------------------------------------------------------------------
+    | Jika salah satu kosong, notifikasi otomatis dilewati tanpa error.
+    | Atur keduanya di Vercel Dashboard untuk mengaktifkan Bot API.
+    */
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id'   => env('TELEGRAM_CHAT_ID'),
+    ],
+
 ];

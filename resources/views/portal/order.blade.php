@@ -293,14 +293,15 @@
                     <div class="alert alert-portal alert-success mt-3 mb-0" style="font-size: 11px;">
                         <i class="bi bi-whatsapp me-1"></i>
                         Kirim bukti transfer ke
-                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode('Konfirmasi pembayaran ' . $order->invoice_number) }}"
+                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode($confirmationMessage) }}"
                            target="_blank" rel="noopener" class="fw-bold text-decoration-none">WhatsApp apotek</a>
                         agar pesanan segera diproses.
                     </div>
                     <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}&text={{ urlencode($confirmationMessage) }}"
                            class="btn btn-sm btn-portal-outline"
-                           data-copy-on-click="Konfirmasi transfer {{ $order->invoice_number }} - {{ config('pharmacy.name') }}">
+                           target="_blank" rel="noopener"
+                           data-copy-on-click="{{ $confirmationMessage }}">
                             <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
                         </a>
                         <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
@@ -325,13 +326,14 @@
                     </div>
                     <div class="alert alert-portal alert-success mt-3 mb-0" style="font-size: 11px;">
                         Sudah bayar? Kirim bukti ke
-                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode('Konfirmasi QRIS ' . $order->invoice_number) }}"
+                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode($confirmationMessage) }}"
                            target="_blank" rel="noopener" class="fw-bold text-decoration-none">WhatsApp apotek</a>.
                     </div>
                     <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}&text={{ urlencode($confirmationMessage) }}"
                            class="btn btn-sm btn-portal-outline"
-                           data-copy-on-click="Konfirmasi QRIS {{ $order->invoice_number }} - {{ config('pharmacy.name') }}">
+                           target="_blank" rel="noopener"
+                           data-copy-on-click="{{ $confirmationMessage }}">
                             <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
                         </a>
                         <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
@@ -349,9 +351,14 @@
                         </div>
                     </div>
                     <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode($confirmationMessage) }}"
+                           target="_blank" rel="noopener" class="btn btn-sm btn-portal">
+                            <i class="bi bi-whatsapp me-1"></i>Konfirmasi via WhatsApp
+                        </a>
+                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}&text={{ urlencode($confirmationMessage) }}"
                            class="btn btn-sm btn-portal-outline"
-                           data-copy-on-click="Konfirmasi pesanan COD {{ $order->invoice_number }} - {{ config('pharmacy.name') }}">
+                           target="_blank" rel="noopener"
+                           data-copy-on-click="{{ $confirmationMessage }}">
                             <i class="bi bi-telegram me-1"></i>Konfirmasi via Telegram
                         </a>
                         <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
@@ -379,7 +386,7 @@
                     <i class="bi bi-headset" style="color: var(--cyan-600);"></i>
                     <div class="checkout-note">
                         Ada pertanyaan? Hubungi
-                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}" target="_blank" rel="noopener"
+                        <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode($confirmationMessage) }}" target="_blank" rel="noopener"
                            class="fw-bold text-decoration-none" style="color: var(--cyan-700);">{{ config('pharmacy.phone') }}</a>
                         dengan menyebutkan invoice <strong>{{ $order->invoice_number }}</strong>.
                     </div>

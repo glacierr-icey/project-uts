@@ -13,8 +13,8 @@ return [
     'legal_name'=> 'Apotek Sehat Sehati Punggur',
     'tagline'   => 'Sehat dimulai dari langkah kecil. Belanja obat lebih mudah, kapan saja.',
     'address'   => 'Jl. Metro - Kotagajah, Dusun Tanggul Angin, Kec. Punggur, Kab. Lampung Tengah, Lampung',
-    'phone'     => '0812-3456-7890',
-    'whatsapp'  => '6281234567890',
+    'phone'     => '0819-2831-0718',
+    'whatsapp'  => '6281928310718',
     'email'     => 'halo@apoteksehatsehati.com',
 
     /*
@@ -26,9 +26,12 @@ return [
     | tg://resolve?phone=<nomor internasional> agar langsung membuka chat
     | di aplikasi Telegram pada ponsel. Nomor tampilan tetap disimpan untuk
     | fallback bila deep-link tidak bisa dibuka di desktop/browser.
+    | notification_contact = nomor tujuan yang dipakai tombol cepat WhatsApp
+    | dan Telegram (0819-2831-0718 -> 6281928310718).
     */
     'telegram_phone'   => '6281928310718',
     'telegram_contact' => '0819-2831-0718',
+    'notification_contact' => '0819-2831-0718',
 
     'hours' => [
         ['day' => 'Senin - Jumat', 'time' => '07.30 - 21.00 WIB'],

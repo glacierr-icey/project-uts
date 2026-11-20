@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductBatch;
 use App\Models\SalesTransaction;
 use App\Models\User;
+use App\Services\PaymentNotifier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -112,6 +113,40 @@ class CustomerPortalTest extends TestCase
 
         $this->assertSame('cancelled', $orderToCancel->fresh()->payment_status);
         $this->assertSame(18, $this->batch->fresh()->stock);
+    }
+
+    public function test_notification_message_contains_order_details_and_total(): void
+    {
+        config()->set('services.telegram.bot_token', null);
+        config()->set('services.telegram.chat_id', null);
+
+        $order = $this->makeOnlineOrder(2);
+
+        $message = app(PaymentNotifier::class)->buildMessage(
+            $order,
+            '🧾 PESANAN BARU',
+            'Menunggu konfirmasi petugas (pending)'
+        );
+
+        $this->assertStringContainsString($order->invoice_number, $message);
+        $this->assertStringContainsString('Paracetamol 500mg x2', $message);
+        $this->assertStringContainsString('Rp 7.000', $message);
+        $this->assertStringContainsString('pending', $message);
+    }
+
+    public function test_order_detail_has_prefilled_whatsapp_and_telegram_summary(): void
+    {
+        config()->set('services.telegram.bot_token', null);
+        config()->set('services.telegram.chat_id', null);
+
+        $order = $this->makeOnlineOrder(1);
+
+        $response = $this->get(route('portal.order.show', $order->invoice_number));
+
+        $response->assertOk();
+        $response->assertSee('wa.me/6281928310718?text=', false);
+        $response->assertSee('tg://resolve?phone=6281928310718&text=', false);
+        $response->assertSee('Rp 3.500');
     }
 
     private function makeOnlineOrder(int $quantity): SalesTransaction

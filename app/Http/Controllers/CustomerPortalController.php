@@ -9,6 +9,7 @@ use App\Models\ProductBatch;
 use App\Models\SalesDetail;
 use App\Models\SalesTransaction;
 use App\Models\User;
+use App\Services\PaymentNotifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -120,7 +121,7 @@ class CustomerPortalController extends Controller
     /**
      * Menyimpan pesanan online pelanggan sebagai transaksi baru (status pending).
      */
-    public function storeOrder(Request $request): RedirectResponse
+    public function storeOrder(Request $request, PaymentNotifier $notifier): RedirectResponse
     {
         $validated = $request->validate([
             'customer_name'    => 'required|string|max:100',
@@ -277,6 +278,9 @@ class CustomerPortalController extends Controller
             ])->withInput();
         }
 
+        // Notifikasi otomatis (fail-safe: dilewati bila env Telegram belum diset).
+        $notifier->orderPlaced($transaction);
+
         return redirect()
             ->route('portal.order.show', $transaction->invoice_number)
             ->with('order_success', true);
@@ -285,7 +289,7 @@ class CustomerPortalController extends Controller
     /**
      * Halaman detail / konfirmasi pesanan berdasarkan nomor invoice.
      */
-    public function showOrder(string $invoice): View
+    public function showOrder(string $invoice, PaymentNotifier $notifier): View
     {
         $order = SalesTransaction::with([
             'customer',
@@ -295,10 +299,18 @@ class CustomerPortalController extends Controller
             ->whereRaw('UPPER(invoice_number) = ?', [strtoupper($invoice)])
             ->firstOrFail();
 
+        // Dipakai untuk mengisi otomatis tautan WhatsApp/Telegram di halaman ini.
+        $confirmationMessage = $notifier->buildMessage(
+            $order,
+            $order->payment_status === 'paid' ? '✅ PEMBAYARAN DIKONFIRMASI' : '🧾 KONFIRMASI PEMBAYARAN',
+            $order->payment_status === 'paid' ? 'Lunas / diproses' : 'Menunggu konfirmasi petugas (pending)'
+        );
+
         return view('portal.order', [
             'order' => $order,
             'store' => config('pharmacy'),
             'banks' => config('pharmacy.banks'),
+            'confirmationMessage' => $confirmationMessage,
         ]);
     }
 
