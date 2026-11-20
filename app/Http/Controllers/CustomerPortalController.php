@@ -302,7 +302,7 @@ class CustomerPortalController extends Controller
         // Dipakai untuk mengisi otomatis tautan WhatsApp/Telegram di halaman ini.
         $confirmationMessage = $notifier->buildMessage(
             $order,
-            $order->payment_status === 'paid' ? '✅ PEMBAYARAN DIKONFIRMASI' : '🧾 KONFIRMASI PEMBAYARAN',
+            $order->payment_status === 'paid' ? "\u{2705} PEMBAYARAN DIKONFIRMASI" : "\u{1F9FE} KONFIRMASI PEMBAYARAN",
             $order->payment_status === 'paid' ? 'Lunas (paid)' : 'Menunggu konfirmasi (pending)'
         );
 

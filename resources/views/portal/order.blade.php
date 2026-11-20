@@ -351,7 +351,7 @@
                     </a>
                     <div class="checkout-note mt-2">
                         Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong>
-                        — ringkasan otomatis disalin saat tombol diklik.
+                        &mdash; ringkasan otomatis disalin saat tombol diklik.
                     </div>
                 </div>
             </div>
