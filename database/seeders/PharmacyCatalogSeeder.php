@@ -15,6 +15,9 @@ class PharmacyCatalogSeeder extends Seeder
      * Setiap obat memiliki satu atau beberapa batch dengan nomor batch,
      * harga beli/jual, stok riil, dan tanggal kadaluarsa berbeda sehingga
      * simulasi FEFO (First Expired, First Out) terlihat lebih nyata.
+     *
+     * Harga jual sengaja diset murah (Rp1.000 - Rp4.000) untuk keperluan
+     * uji coba/demo portal pelanggan dan checkout.
      */
     public function run(): void
     {
@@ -39,7 +42,7 @@ class PharmacyCatalogSeeder extends Seeder
         }
 
         // -----------------------------------------------------------------
-        // 2. Katalog obat + batch FEFO
+        // 2. Katalog obat + batch FEFO (harga demo Rp1.000 - Rp4.000)
         // -----------------------------------------------------------------
         $catalog = [
             // ================= ANALGESIK & ANTIPIRETIK =================
@@ -49,8 +52,8 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-SNM-01', 'buy_price' => 2500, 'sell_price' => 3500, 'stock' => 18, 'expired_months' => 2],
-                    ['batch_number' => 'BATCH-SNM-02', 'buy_price' => 2500, 'sell_price' => 3500, 'stock' => 60, 'expired_months' => 14],
+                    ['batch_number' => 'BATCH-SNM-01', 'buy_price' => 1000, 'sell_price' => 1000, 'stock' => 18, 'expired_months' => 2],
+                    ['batch_number' => 'BATCH-SNM-02', 'buy_price' => 1000, 'sell_price' => 1000, 'stock' => 60, 'expired_months' => 14],
                 ],
             ],
             [
@@ -59,8 +62,8 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-IBU-01', 'buy_price' => 4200, 'sell_price' => 6000, 'stock' => 40, 'expired_months' => 5],
-                    ['batch_number' => 'BATCH-IBU-02', 'buy_price' => 4200, 'sell_price' => 6000, 'stock' => 55, 'expired_months' => 16],
+                    ['batch_number' => 'BATCH-IBU-01', 'buy_price' => 1200, 'sell_price' => 1500, 'stock' => 40, 'expired_months' => 5],
+                    ['batch_number' => 'BATCH-IBU-02', 'buy_price' => 1200, 'sell_price' => 1500, 'stock' => 55, 'expired_months' => 16],
                 ],
             ],
             [
@@ -69,7 +72,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 8,
                 'batches' => [
-                    ['batch_number' => 'BATCH-BDX-01', 'buy_price' => 3500, 'sell_price' => 5000, 'stock' => 30, 'expired_months' => 7],
+                    ['batch_number' => 'BATCH-BDX-01', 'buy_price' => 1200, 'sell_price' => 1500, 'stock' => 30, 'expired_months' => 7],
                 ],
             ],
             [
@@ -78,8 +81,8 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Botol',
                 'min_stock' => 6,
                 'batches' => [
-                    ['batch_number' => 'BATCH-PCS-01', 'buy_price' => 8500, 'sell_price' => 12000, 'stock' => 24, 'expired_months' => 4],
-                    ['batch_number' => 'BATCH-PCS-02', 'buy_price' => 8500, 'sell_price' => 12000, 'stock' => 20, 'expired_months' => 11],
+                    ['batch_number' => 'BATCH-PCS-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 24, 'expired_months' => 4],
+                    ['batch_number' => 'BATCH-PCS-02', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 20, 'expired_months' => 11],
                 ],
             ],
             [
@@ -88,7 +91,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 8,
                 'batches' => [
-                    ['batch_number' => 'BATCH-MEF-01', 'buy_price' => 3800, 'sell_price' => 5500, 'stock' => 35, 'expired_months' => 9],
+                    ['batch_number' => 'BATCH-MEF-01', 'buy_price' => 1500, 'sell_price' => 2000, 'stock' => 35, 'expired_months' => 9],
                 ],
             ],
 
@@ -99,8 +102,8 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Botol',
                 'min_stock' => 5,
                 'batches' => [
-                    ['batch_number' => 'BATCH-LSR-01', 'buy_price' => 10000, 'sell_price' => 13000, 'stock' => 25, 'expired_months' => 8],
-                    ['batch_number' => 'BATCH-LSR-02', 'buy_price' => 10000, 'sell_price' => 13000, 'stock' => 18, 'expired_months' => 17],
+                    ['batch_number' => 'BATCH-LSR-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 25, 'expired_months' => 8],
+                    ['batch_number' => 'BATCH-LSR-02', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 18, 'expired_months' => 17],
                 ],
             ],
             [
@@ -109,7 +112,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Botol',
                 'min_stock' => 6,
                 'batches' => [
-                    ['batch_number' => 'BATCH-OBH-01', 'buy_price' => 12000, 'sell_price' => 16000, 'stock' => 30, 'expired_months' => 6],
+                    ['batch_number' => 'BATCH-OBH-01', 'buy_price' => 2500, 'sell_price' => 3000, 'stock' => 30, 'expired_months' => 6],
                 ],
             ],
             [
@@ -118,7 +121,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Botol',
                 'min_stock' => 6,
                 'batches' => [
-                    ['batch_number' => 'BATCH-BSV-01', 'buy_price' => 22000, 'sell_price' => 28000, 'stock' => 22, 'expired_months' => 10],
+                    ['batch_number' => 'BATCH-BSV-01', 'buy_price' => 3000, 'sell_price' => 3500, 'stock' => 22, 'expired_months' => 10],
                 ],
             ],
             [
@@ -127,7 +130,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Botol',
                 'min_stock' => 6,
                 'batches' => [
-                    ['batch_number' => 'BATCH-VKS-01', 'buy_price' => 18000, 'sell_price' => 24000, 'stock' => 20, 'expired_months' => 12],
+                    ['batch_number' => 'BATCH-VKS-01', 'buy_price' => 3000, 'sell_price' => 3500, 'stock' => 20, 'expired_months' => 12],
                 ],
             ],
 
@@ -138,7 +141,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Sachet',
                 'min_stock' => 20,
                 'batches' => [
-                    ['batch_number' => 'BATCH-MDR-01', 'buy_price' => 1200, 'sell_price' => 2000, 'stock' => 100, 'expired_months' => 12],
+                    ['batch_number' => 'BATCH-MDR-01', 'buy_price' => 800, 'sell_price' => 1000, 'stock' => 100, 'expired_months' => 12],
                 ],
             ],
             [
@@ -147,8 +150,8 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 12,
                 'batches' => [
-                    ['batch_number' => 'BATCH-VTC-01', 'buy_price' => 5500, 'sell_price' => 8000, 'stock' => 55, 'expired_months' => 5],
-                    ['batch_number' => 'BATCH-VTC-02', 'buy_price' => 5500, 'sell_price' => 8000, 'stock' => 70, 'expired_months' => 15],
+                    ['batch_number' => 'BATCH-VTC-01', 'buy_price' => 1500, 'sell_price' => 2000, 'stock' => 55, 'expired_months' => 5],
+                    ['batch_number' => 'BATCH-VTC-02', 'buy_price' => 1500, 'sell_price' => 2000, 'stock' => 70, 'expired_months' => 15],
                 ],
             ],
             [
@@ -157,7 +160,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-BCZ-01', 'buy_price' => 4500, 'sell_price' => 6500, 'stock' => 45, 'expired_months' => 8],
+                    ['batch_number' => 'BATCH-BCZ-01', 'buy_price' => 1500, 'sell_price' => 2000, 'stock' => 45, 'expired_months' => 8],
                 ],
             ],
             [
@@ -166,7 +169,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Sachet',
                 'min_stock' => 24,
                 'batches' => [
-                    ['batch_number' => 'BATCH-TLA-01', 'buy_price' => 2500, 'sell_price' => 4000, 'stock' => 120, 'expired_months' => 10],
+                    ['batch_number' => 'BATCH-TLA-01', 'buy_price' => 1000, 'sell_price' => 1500, 'stock' => 120, 'expired_months' => 10],
                 ],
             ],
             [
@@ -175,7 +178,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-SGB-01', 'buy_price' => 7000, 'sell_price' => 9500, 'stock' => 40, 'expired_months' => 14],
+                    ['batch_number' => 'BATCH-SGB-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 40, 'expired_months' => 14],
                 ],
             ],
             [
@@ -184,7 +187,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-VTB-01', 'buy_price' => 3500, 'sell_price' => 5000, 'stock' => 50, 'expired_months' => 11],
+                    ['batch_number' => 'BATCH-VTB-01', 'buy_price' => 1200, 'sell_price' => 1500, 'stock' => 50, 'expired_months' => 11],
                 ],
             ],
 
@@ -195,7 +198,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Tube',
                 'min_stock' => 5,
                 'batches' => [
-                    ['batch_number' => 'BATCH-CPN-01', 'buy_price' => 24000, 'sell_price' => 30000, 'stock' => 15, 'expired_months' => 18],
+                    ['batch_number' => 'BATCH-CPN-01', 'buy_price' => 3000, 'sell_price' => 4000, 'stock' => 15, 'expired_months' => 18],
                 ],
             ],
             [
@@ -204,7 +207,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Tube',
                 'min_stock' => 6,
                 'batches' => [
-                    ['batch_number' => 'BATCH-SL88-01', 'buy_price' => 8000, 'sell_price' => 11000, 'stock' => 28, 'expired_months' => 9],
+                    ['batch_number' => 'BATCH-SL88-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 28, 'expired_months' => 9],
                 ],
             ],
             [
@@ -213,7 +216,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Botol',
                 'min_stock' => 8,
                 'batches' => [
-                    ['batch_number' => 'BATCH-BTD-01', 'buy_price' => 15000, 'sell_price' => 19000, 'stock' => 34, 'expired_months' => 20],
+                    ['batch_number' => 'BATCH-BTD-01', 'buy_price' => 2500, 'sell_price' => 3000, 'stock' => 34, 'expired_months' => 20],
                 ],
             ],
             [
@@ -222,7 +225,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Box',
                 'min_stock' => 5,
                 'batches' => [
-                    ['batch_number' => 'BATCH-ALC-01', 'buy_price' => 9000, 'sell_price' => 13000, 'stock' => 40, 'expired_months' => 24],
+                    ['batch_number' => 'BATCH-ALC-01', 'buy_price' => 2500, 'sell_price' => 3000, 'stock' => 40, 'expired_months' => 24],
                 ],
             ],
             [
@@ -231,7 +234,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Botol',
                 'min_stock' => 8,
                 'batches' => [
-                    ['batch_number' => 'BATCH-MKP-01', 'buy_price' => 18000, 'sell_price' => 23000, 'stock' => 32, 'expired_months' => 22],
+                    ['batch_number' => 'BATCH-MKP-01', 'buy_price' => 3000, 'sell_price' => 3500, 'stock' => 32, 'expired_months' => 22],
                 ],
             ],
 
@@ -242,8 +245,8 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-AMX-01', 'buy_price' => 9000, 'sell_price' => 14000, 'stock' => 50, 'expired_months' => 6],
-                    ['batch_number' => 'BATCH-AMX-02', 'buy_price' => 9000, 'sell_price' => 14000, 'stock' => 65, 'expired_months' => 18],
+                    ['batch_number' => 'BATCH-AMX-01', 'buy_price' => 2500, 'sell_price' => 3000, 'stock' => 50, 'expired_months' => 6],
+                    ['batch_number' => 'BATCH-AMX-02', 'buy_price' => 2500, 'sell_price' => 3000, 'stock' => 65, 'expired_months' => 18],
                 ],
             ],
             [
@@ -252,7 +255,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 6,
                 'batches' => [
-                    ['batch_number' => 'BATCH-AZM-01', 'buy_price' => 28000, 'sell_price' => 36000, 'stock' => 24, 'expired_months' => 8],
+                    ['batch_number' => 'BATCH-AZM-01', 'buy_price' => 3500, 'sell_price' => 4000, 'stock' => 24, 'expired_months' => 8],
                 ],
             ],
             [
@@ -261,7 +264,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 6,
                 'batches' => [
-                    ['batch_number' => 'BATCH-CPF-01', 'buy_price' => 11000, 'sell_price' => 16000, 'stock' => 30, 'expired_months' => 12],
+                    ['batch_number' => 'BATCH-CPF-01', 'buy_price' => 3000, 'sell_price' => 3500, 'stock' => 30, 'expired_months' => 12],
                 ],
             ],
 
@@ -272,8 +275,8 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-CTZ-01', 'buy_price' => 3500, 'sell_price' => 5500, 'stock' => 48, 'expired_months' => 7],
-                    ['batch_number' => 'BATCH-CTZ-02', 'buy_price' => 3500, 'sell_price' => 5500, 'stock' => 60, 'expired_months' => 19],
+                    ['batch_number' => 'BATCH-CTZ-01', 'buy_price' => 1500, 'sell_price' => 2000, 'stock' => 48, 'expired_months' => 7],
+                    ['batch_number' => 'BATCH-CTZ-02', 'buy_price' => 1500, 'sell_price' => 2000, 'stock' => 60, 'expired_months' => 19],
                 ],
             ],
             [
@@ -282,7 +285,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 8,
                 'batches' => [
-                    ['batch_number' => 'BATCH-LRT-01', 'buy_price' => 4000, 'sell_price' => 6000, 'stock' => 36, 'expired_months' => 13],
+                    ['batch_number' => 'BATCH-LRT-01', 'buy_price' => 1500, 'sell_price' => 2000, 'stock' => 36, 'expired_months' => 13],
                 ],
             ],
             [
@@ -291,7 +294,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-CTM-01', 'buy_price' => 2000, 'sell_price' => 3500, 'stock' => 55, 'expired_months' => 10],
+                    ['batch_number' => 'BATCH-CTM-01', 'buy_price' => 1000, 'sell_price' => 1500, 'stock' => 55, 'expired_months' => 10],
                 ],
             ],
 
@@ -302,8 +305,8 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 12,
                 'batches' => [
-                    ['batch_number' => 'BATCH-ANT-01', 'buy_price' => 2800, 'sell_price' => 4500, 'stock' => 60, 'expired_months' => 5],
-                    ['batch_number' => 'BATCH-ANT-02', 'buy_price' => 2800, 'sell_price' => 4500, 'stock' => 75, 'expired_months' => 15],
+                    ['batch_number' => 'BATCH-ANT-01', 'buy_price' => 1000, 'sell_price' => 1500, 'stock' => 60, 'expired_months' => 5],
+                    ['batch_number' => 'BATCH-ANT-02', 'buy_price' => 1000, 'sell_price' => 1500, 'stock' => 75, 'expired_months' => 15],
                 ],
             ],
             [
@@ -312,7 +315,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-PRM-01', 'buy_price' => 6500, 'sell_price' => 9000, 'stock' => 42, 'expired_months' => 8],
+                    ['batch_number' => 'BATCH-PRM-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 42, 'expired_months' => 8],
                 ],
             ],
             [
@@ -321,7 +324,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-OMP-01', 'buy_price' => 6500, 'sell_price' => 9500, 'stock' => 38, 'expired_months' => 11],
+                    ['batch_number' => 'BATCH-OMP-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 38, 'expired_months' => 11],
                 ],
             ],
             [
@@ -330,7 +333,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 8,
                 'batches' => [
-                    ['batch_number' => 'BATCH-DMP-01', 'buy_price' => 5500, 'sell_price' => 8000, 'stock' => 30, 'expired_months' => 9],
+                    ['batch_number' => 'BATCH-DMP-01', 'buy_price' => 1500, 'sell_price' => 2000, 'stock' => 30, 'expired_months' => 9],
                 ],
             ],
             [
@@ -339,7 +342,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Sachet',
                 'min_stock' => 20,
                 'batches' => [
-                    ['batch_number' => 'BATCH-LCB-01', 'buy_price' => 3500, 'sell_price' => 5000, 'stock' => 90, 'expired_months' => 10],
+                    ['batch_number' => 'BATCH-LCB-01', 'buy_price' => 1000, 'sell_price' => 1500, 'stock' => 90, 'expired_months' => 10],
                 ],
             ],
 
@@ -350,7 +353,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Sachet',
                 'min_stock' => 24,
                 'batches' => [
-                    ['batch_number' => 'BATCH-ORL-01', 'buy_price' => 1500, 'sell_price' => 2500, 'stock' => 100, 'expired_months' => 12],
+                    ['batch_number' => 'BATCH-ORL-01', 'buy_price' => 800, 'sell_price' => 1000, 'stock' => 100, 'expired_months' => 12],
                 ],
             ],
 
@@ -361,7 +364,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-AML-01', 'buy_price' => 4500, 'sell_price' => 7000, 'stock' => 45, 'expired_months' => 13],
+                    ['batch_number' => 'BATCH-AML-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 45, 'expired_months' => 13],
                 ],
             ],
             [
@@ -370,7 +373,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 10,
                 'batches' => [
-                    ['batch_number' => 'BATCH-CPT-01', 'buy_price' => 3800, 'sell_price' => 6000, 'stock' => 40, 'expired_months' => 16],
+                    ['batch_number' => 'BATCH-CPT-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 40, 'expired_months' => 16],
                 ],
             ],
             [
@@ -379,7 +382,7 @@ class PharmacyCatalogSeeder extends Seeder
                 'unit' => 'Strip',
                 'min_stock' => 8,
                 'batches' => [
-                    ['batch_number' => 'BATCH-SMV-01', 'buy_price' => 5000, 'sell_price' => 7500, 'stock' => 35, 'expired_months' => 14],
+                    ['batch_number' => 'BATCH-SMV-01', 'buy_price' => 2000, 'sell_price' => 2500, 'stock' => 35, 'expired_months' => 14],
                 ],
             ],
         ];
@@ -398,18 +401,28 @@ class PharmacyCatalogSeeder extends Seeder
             );
 
             foreach ($item['batches'] as $batch) {
-                ProductBatch::firstOrCreate(
+                $attributes = [
+                    'buy_price'  => $batch['buy_price'],
+                    'sell_price' => $batch['sell_price'],
+                ];
+
+                $productBatch = ProductBatch::firstOrCreate(
                     [
                         'product_id' => $product->id,
                         'batch_number' => $batch['batch_number'],
                     ],
-                    [
-                        'buy_price' => $batch['buy_price'],
-                        'sell_price' => $batch['sell_price'],
+                    $attributes + [
                         'stock' => $batch['stock'],
                         'expired_date' => now()->addMonths($batch['expired_months'])->toDateString(),
                     ]
                 );
+
+                // Selaraskan harga pada database yang sudah terisi (idempotent).
+                // Stok, nomor batch, dan tanggal kadaluarsa tidak diubah.
+                if ((float) $productBatch->buy_price !== (float) $batch['buy_price']
+                    || (float) $productBatch->sell_price !== (float) $batch['sell_price']) {
+                    $productBatch->update($attributes);
+                }
             }
         }
     }

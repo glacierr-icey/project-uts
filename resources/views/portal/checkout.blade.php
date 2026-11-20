@@ -283,6 +283,14 @@
                             <i class="bi bi-whatsapp me-1" style="color: #16a34a;"></i>
                             Setelah transfer, kirim bukti pembayaran ke WhatsApp apotek agar pesanan segera diproses.
                         </div>
+                        <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                            <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                               class="btn btn-sm btn-portal-outline" target="_blank" rel="noopener"
+                               data-copy-on-click="Konfirmasi pembayaran pesanan {{ config('pharmacy.name') }}">
+                                <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
+                            </a>
+                            <span class="checkout-note">Kontak Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
+                        </div>
                     </div>
 
                     {{-- Panel QRIS --}}
@@ -307,6 +315,14 @@
                                     @foreach (['GoPay', 'OVO', 'Dana', 'ShopeePay', 'BCA Mobile', 'BRImo'] as $wallet)
                                         <span class="soft-chip" style="font-size: 10px; padding: 4px 8px;">{{ $wallet }}</span>
                                     @endforeach
+                                </div>
+                                <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                                    <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                                       class="btn btn-sm btn-portal-outline" target="_blank" rel="noopener"
+                                       data-copy-on-click="Konfirmasi QRIS pesanan {{ config('pharmacy.name') }}">
+                                        <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
+                                    </a>
+                                    <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
                                 </div>
                             </div>
                         </div>
@@ -533,6 +549,16 @@
                 } else {
                     window.PortalCart.showToast('Nomor rekening: ' + value);
                 }
+                return;
+            }
+
+            const telegramButton = event.target.closest('[data-copy-on-click]');
+            if (telegramButton) {
+                const message = telegramButton.dataset.copyOnClick;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(message).catch(() => {});
+                }
+                window.PortalCart.showToast('Pesan konfirmasi disalin. Tempel di chat Telegram.');
             }
         });
 

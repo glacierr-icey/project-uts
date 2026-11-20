@@ -297,6 +297,14 @@
                            target="_blank" rel="noopener" class="fw-bold text-decoration-none">WhatsApp apotek</a>
                         agar pesanan segera diproses.
                     </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                           class="btn btn-sm btn-portal-outline"
+                           data-copy-on-click="Konfirmasi transfer {{ $order->invoice_number }} - {{ config('pharmacy.name') }}">
+                            <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
+                        </a>
+                        <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
+                    </div>
                 @elseif ($order->payment_method === 'qris')
                     <p class="checkout-note mb-3">
                         Scan QRIS berikut menggunakan m-banking atau e-wallet. Nominal:
@@ -320,6 +328,14 @@
                         <a href="https://wa.me/{{ config('pharmacy.whatsapp') }}?text={{ urlencode('Konfirmasi QRIS ' . $order->invoice_number) }}"
                            target="_blank" rel="noopener" class="fw-bold text-decoration-none">WhatsApp apotek</a>.
                     </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                           class="btn btn-sm btn-portal-outline"
+                           data-copy-on-click="Konfirmasi QRIS {{ $order->invoice_number }} - {{ config('pharmacy.name') }}">
+                            <i class="bi bi-telegram me-1"></i>Kirim Bukti via Telegram
+                        </a>
+                        <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
+                    </div>
                 @else
                     <p class="checkout-note mb-3">
                         Bayar tunai sebesar
@@ -331,6 +347,14 @@
                         <div class="checkout-note">
                             Siapkan uang pas bila memungkinkan. Petugas akan memberikan struk pembayaran saat serah terima.
                         </div>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                        <a href="tg://resolve?phone={{ config('pharmacy.telegram_phone') }}"
+                           class="btn btn-sm btn-portal-outline"
+                           data-copy-on-click="Konfirmasi pesanan COD {{ $order->invoice_number }} - {{ config('pharmacy.name') }}">
+                            <i class="bi bi-telegram me-1"></i>Konfirmasi via Telegram
+                        </a>
+                        <span class="checkout-note">Telegram: <strong>{{ config('pharmacy.telegram_contact') }}</strong></span>
                     </div>
                 @endif
             </div>
@@ -370,17 +394,27 @@
 <script>
     document.addEventListener('click', function (event) {
         const copyButton = event.target.closest('[data-copy]');
-        if (!copyButton) return;
+        if (copyButton) {
+            const value = copyButton.dataset.copy;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(value).then(() => {
+                    window.PortalCart.showToast('Nomor rekening berhasil disalin.');
+                }).catch(() => {
+                    window.PortalCart.showToast('Gagal menyalin. Salin manual: ' + value, 'warning');
+                });
+            } else {
+                window.PortalCart.showToast('Nomor rekening: ' + value);
+            }
+            return;
+        }
 
-        const value = copyButton.dataset.copy;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(value).then(() => {
-                window.PortalCart.showToast('Nomor rekening berhasil disalin.');
-            }).catch(() => {
-                window.PortalCart.showToast('Gagal menyalin. Salin manual: ' + value, 'warning');
-            });
-        } else {
-            window.PortalCart.showToast('Nomor rekening: ' + value);
+        const telegramButton = event.target.closest('[data-copy-on-click]');
+        if (telegramButton) {
+            const message = telegramButton.dataset.copyOnClick;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(message).catch(() => {});
+            }
+            window.PortalCart.showToast('Pesan konfirmasi disalin. Tempel di chat Telegram.');
         }
     });
 </script>

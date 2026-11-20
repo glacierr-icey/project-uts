@@ -17,6 +17,19 @@ return [
     'whatsapp'  => '6281234567890',
     'email'     => 'halo@apoteksehatsehati.com',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Konfirmasi Pembayaran via Telegram
+    |--------------------------------------------------------------------------
+    | Pelanggan dapat mengirim bukti pembayaran ke kontak Telegram apotek
+    | lewat deep-link (tanpa bot/token). Tombol memakai format
+    | tg://resolve?phone=<nomor internasional> agar langsung membuka chat
+    | di aplikasi Telegram pada ponsel. Nomor tampilan tetap disimpan untuk
+    | fallback bila deep-link tidak bisa dibuka di desktop/browser.
+    */
+    'telegram_phone'   => '6281928310718',
+    'telegram_contact' => '0819-2831-0718',
+
     'hours' => [
         ['day' => 'Senin - Jumat', 'time' => '07.30 - 21.00 WIB'],
         ['day' => 'Sabtu',         'time' => '07.30 - 21.00 WIB'],
